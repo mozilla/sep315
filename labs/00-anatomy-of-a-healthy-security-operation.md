@@ -30,7 +30,6 @@ This is one of the frameworks that can be used for healthy security operations.
 4. Recovery
 5. Lessons learned
 
-
 ## SIEM's typical capabilities
 
 - Record incidents, live, automatically, in a collaborative manner
@@ -41,10 +40,10 @@ This is one of the frameworks that can be used for healthy security operations.
 - Assist manual blocking and containment
 - Dashboards, reporting, metrics, visualizations
 
-
 ## Additional resources
 
 - [CIS Benchmarks](https://www.cisecurity.org/cis-benchmarks/)
+- [SANS/CIS critical security controls](https://www.sans.org/critical-security-controls)
 - [Mozilla Infosec guidelines](https://infosec.mozilla.org/#guidelines)
 - [Mozilla Infosec risk assesment](https://infosec.mozilla.org/#risk-assessment)
 - [Mozilla Infosec IAM](https://infosec.mozilla.org/#iam)
