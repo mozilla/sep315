@@ -53,3 +53,60 @@ When ready to test your code feel free to push the "Test" button in lambda.  If 
 You may also run multiple alerts inside the same lambda function by copying and pasting the code block called `AlertCloudTrailLoggingDisabled` and adding them to the main lambda event handler. 
 
 _Note:_ that these classes must have unique names inside of the same lambda function.  The names should be descriptive of what you are attempting to alert on.  
+
+For example if you wanted to generate an alert every time there was a console login you might write a class that looks like:
+
+```python
+class AlertMyFirstAlert(AlertTask):
+    def _configureKombu(self):
+        """Override the normal behavior of this in order to run in lambda."""
+        pass
+
+    def alertToMessageQueue(self, alertDict):
+        """Override the normal behavior of this in order to run in lambda."""
+        pass
+
+    def main(self):
+        # How many minutes back in time would you like to search?
+        search_query = SearchQuery(minutes=15)
+
+        # What would you like to search for?
+        search_query.add_must([
+            TermMatch('source', 'vpc_flow'), # The source is vpc_flow logs
+            TermMatch('details.destinationport', 22)
+        ])
+
+        self.filtersManual(search_query)
+        self.searchEventsSimple()
+        self.walkEvents()
+
+    def onEvent(self, event):
+        category = 'vpc_flow'
+
+        # Useful tag and severity rankings for your alert.
+        tags = ['aws', 'vpc_flow']
+        severity = 'WARNING'
+
+        # What message should surface in the user interface when this fires?
+        summary = 'A user attempted an ssh session to port 22.'
+
+        # This could also include correlating the number of bytes exchanged # to understand if this was a successful SSH session vs a tcp RESET
+
+        return self.createAlertDict(summary, category, tags, [event], severity)
+
+        # Learn more about MozDef alerts by exploring the "Alert class!"
+
+```
+
+Then we simply add our new class to the main method in order to get the alert to run.
+
+```python
+    logger.debug('Function initialized.')
+    a = AlertCloudtrailLoggingDisabled()
+    b = AlertMyFirstAlert()
+    print(a.main())
+    print(b.main())
+    return 200
+```
+
+> Now both alerts run as part of a single lambda execution.  If the alerts match on terms you will see these surface in the MozDef UI.
