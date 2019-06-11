@@ -14,7 +14,8 @@ In our workshop sandbox, we've simulated that event for you.
 Would you be able to find the connections attempts? Can you tell which one were successful (i.e. attacker got a shell)?
 Using the learnings from the previous lab, can you draft how an alert for this event would look like?
 
-> **Tip**: Successful SSH connections result in more data being sent over the wire than unsuccessful ones.
+> **Tip**: Successful SSH connections result in more data being sent over the wire than unsuccessful ones. Look for vpc
+> flow data!
 
 ### Breadcrumbs
 
