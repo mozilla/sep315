@@ -48,16 +48,19 @@ Using the learnings from the previous lab, can you draft how an alert for this e
 > be very close between a successful and an unsuccessful connection, so it's not always reliable - but we also don't
 > have perfect logging, and it's often sufficient. Remember to think out of the box!
 
-## Alert : Attacker is determining what permissions they have
+## Alert : Attacker is surveilling an account 
 
 ### Scenario
 
-The scenario description would go here
+An attacker, when first gaining access to an account, may begin by performing
+reconnaissance on the account to understand both what's present in the account
+as well as what AWS products they have access to with the credentials they're 
+using. This process could be detected using MozDef based on the fact that the
+reconnaissance necessarily results in an excessive number of `Describe` calls
+to the AWS API which result in CloudTrail records.
 
-### Goal
-
-Determine what IAM user or role is making a large number of Describe calls to
-the AWS API as this may imply an attacker is using a compromised IAM entity.
+Try to determine if an actor is performing a large number of `Describe` calls
+in your AWS account and if so, find out who's making the calls.
 
 ### What to do
 
