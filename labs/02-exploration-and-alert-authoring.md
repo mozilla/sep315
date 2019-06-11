@@ -30,7 +30,7 @@ You should see a lambda function similarly name to the one above.  Click on it t
 
 Scroll down past the boiler plate code to turn on the python logger to find an object in python called: `AlertCloudTrailLoggingDisabled`.
 
-Pay careful attention to the method within the object called: `onEvent` and `main`
+Pay careful attention to the methods within the object called: `onEvent` and `main`
 
 `main` is designed to take a single event and then perform a search in elastic whereas `onEvent` will execute if the search terms are matched in elastic.  Uncomment lines _38 - 41_ and customize the search terms in order to modify the alert to match on `StopLogging` instead of `DescribeTable`.
 
