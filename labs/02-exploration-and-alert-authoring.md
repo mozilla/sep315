@@ -53,3 +53,134 @@ When ready to test your code feel free to push the "Test" button in lambda.  If 
 You may also run multiple alerts inside the same lambda function by copying and pasting the code block called `AlertCloudTrailLoggingDisabled` and adding them to the main lambda event handler. 
 
 _Note:_ that these classes must have unique names inside of the same lambda function.  The names should be descriptive of what you are attempting to alert on.  
+
+For example if you wanted to generate an alert every time there was a console login you might write a class that looks like:
+
+```python
+class AlertMyFirstAlert(AlertTask):
+    def _configureKombu(self):
+        """Override the normal behavior of this in order to run in lambda."""
+        pass
+
+    def alertToMessageQueue(self, alertDict):
+        """Override the normal behavior of this in order to run in lambda."""
+        pass
+
+    def main(self):
+        # How many minutes back in time would you like to search?
+        search_query = SearchQuery(minutes=15)
+
+        # What would you like to search for?
+        search_query.add_must([
+            TermMatch('source', 'vpc_flow'), # The source is vpc_flow logs
+            TermMatch('details.destinationport', 22)
+        ])
+
+        self.filtersManual(search_query)
+        self.searchEventsSimple()
+        self.walkEvents()
+
+    def onEvent(self, event):
+        category = 'vpc_flow'
+
+        # Useful tag and severity rankings for your alert.
+        tags = ['aws', 'vpc_flow']
+        severity = 'WARNING'
+
+        # What message should surface in the user interface when this fires?
+        summary = 'A user attempted an ssh session to port 22.'
+
+        # This could also include correlating the number of bytes exchanged # to understand if this was a successful SSH session vs a tcp RESET
+
+        return self.createAlertDict(summary, category, tags, [event], severity)
+
+        # Learn more about MozDef alerts by exploring the "Alert class!"
+
+```
+
+Then we simply add our new class to the main method in order to get the alert to run.
+
+```python
+    logger.debug('Function initialized.')
+    a = AlertCloudtrailLoggingDisabled()
+    b = AlertMyFirstAlert()
+    print(a.main())
+    print(b.main())
+    return 200
+```
+
+> Now both alerts run as part of a single lambda execution.  If the alerts match on terms you will see these surface in the MozDef UI.
+
+### Aggregation alerts
+
+In the prior exercise you explored the MozDef simple alert pattern.  Now let's explore the alert aggregation pattern.  The alert aggregation is useful for correlation of multiple points of data across a time series.
+
+Below is an example of a simple aggregation that is running on another system _not AWS Lambda_ in your environment.
+
+```python
+#!/usr/bin/env python
+
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+# Copyright (c) 2014 Mozilla Corporation
+
+
+from lib.alerttask import AlertTask
+from mozdef_util.query_models import SearchQuery, TermMatch, ExistsMatch
+
+
+class AlertCloudtrailExcessiveDescribe(AlertTask):
+    def main(self):
+        # Create a query to look back the last 20 minutes
+        search_query = SearchQuery(minutes=20)
+
+        # Add search terms to our query
+        search_query.add_must([
+            TermMatch('source', 'cloudtrail'),
+            TermMatch('details.eventverb', 'Describe'),
+            ExistsMatch('details.source')
+        ])
+
+        self.filtersManual(search_query)
+        # We aggregate on details.hostname which is the AWS service name
+        self.searchEventsAggregated('details.source', samplesLimit=2)
+        self.walkAggregations(threshold=50)
+
+    def onAggregation(self, aggreg):
+        category = 'access'
+        tags = ['cloudtrail']
+        severity = 'WARNING'
+        summary = "Excessive Describe calls on {0} ({1})".format(aggreg['value'], aggreg['count'])
+
+        # Create the alert object based on these properties
+        return self.createAlertDict(summary, category, tags, aggreg['events'], severity)
+```
+
+> Note: That in the above example instead of using `onEvent` we instead use onAggregation.  
+
+The alert logic flows over a sliding window which in this case pulls back 20 minutes of cloudtrail data at a time.  
+
+#### Code Highlights from aggregation
+
+```python
+        # We aggregate on details.hostname which is the AWS service name
+        self.searchEventsAggregated('details.source', samplesLimit=2)
+        self.walkAggregations(threshold=50)
+```
+
+In the above codeblock there are two key terms `sampleLimit` and `threshold`.
+
+* `samplelimit`: is how many times the alert will sample elasticsearch using the search terms.
+* `threshold`: in the totality of the two samples for the given time window.  The terms must match this number of times.
+
+**This means that for the above alert to fire.  In 20 minutes inside of 2 samples there MUST be 50 events that are eventVerb type Describe in order to trigger the "excessive describe calls" alert.**
+
+### Lab Exercise
+
+For your lab exercise in this section choose the appropriate alert to do the following:
+
+1. Detect the creation of new tags on instances,  using simple alerts.  The API call should be `ec2:TagInstance`.  You can test this by adding a tag to a system in your account.
+**Solution:** A solution has been provided (here)['solutions/02-alert-writing.md']
+
+> Note: In an upcoming lab you will be able to use an aggregation as part of an investigation.
