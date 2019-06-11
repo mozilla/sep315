@@ -27,6 +27,9 @@ Find an example event:
 Copy-paste this code in the Cloud9 editor for Lambda functions and click the "test" button.
 
 ```python
+from lib.alerttask import AlertTask
+from mozdef_util.query_models import SearchQuery, TermMatch
+
 class AlertMyFirstAlert(AlertTask):
     def _configureKombu(self):
         """Override the normal behavior of this in order to run in lambda."""
@@ -70,4 +73,78 @@ def handler(event, context):
     print(a.main())
     print(b.main())
     return 200
+```
+
+## New S3 bucket suddenly made public
+
+### Find the data
+
+Find an example event:
+
+1. Go in Kibana, and in the "Discover" mode search for the string `details.requestparameters.host:s3.us-west-2.amazonaws.com`
+2. If that's not sufficient, you can also directly search for `details.eventname:PutBucketPublicAccessBlock` (see
+   [https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTPublicAccessBlock.html](AWS S3 API documentation))
+3. You can also look for `details.eventname:PutBucketAcl` and read `details.requestparameters.accesscontrolpolicy.accesscontrollist.grant`
+   Does it contain `"permission": "READ"` for grantee `"uri": "http://acs.amazonaws.com/groups/global/AllUsers"` for
+   example? If so, this ACL gives read access to everyone for example. There are a few different interesting, similar S3
+   functions.
+
+Note that the event data will contain things such as the IP address, user-agent (S3 Console, etc.), and role, user that
+have done the change as well.
+
+### Writing the alert
+
+Copy-paste this code in the Cloud9 editor for Lambda functions and click the "test" button.
+
+```python
+from lib.alerttask import AlertTask
+from mozdef_util.query_models import SearchQuery, TermMatch
+
+class AlertMyFirstAlert(AlertTask):
+    def _configureKombu(self):
+        """Override the normal behavior of this in order to run in lambda."""
+        pass
+
+    def alertToMessageQueue(self, alertDict):
+        """Override the normal behavior of this in order to run in lambda."""
+        pass
+
+    def main(self):
+        # How many minutes back in time would you like to search?
+        search_query = SearchQuery(minutes=15)
+
+        # What would you like to search for?
+        search_query.add_must([
+            TermMatch('source', 'cloudtrail'),
+            TermMatch('details.eventname', 'PutBucketPublicAccessBlock'),
+            TermMatch('details.requestparameters.publicaccessblockconfiguration.restrictpublicbuckets', 'false'),
+            TermMatch('details.requestparameters.publicaccessblockconfiguration.blockpublicpolicy', 'false'),
+            TermMatch('details.requestparameters.publicaccessblockconfiguration.blockpublicacls', 'false')
+        ])
+
+        self.filtersManual(search_query)
+        self.searchEventsSimple()
+        self.walkEvents()
+
+    def onEvent(self, event):
+        category = 'AwsApiCall'
+
+        # Useful tag and severity rankings for your alert.
+        tags = ['aws', 's3public']
+        severity = 'WARNING'
+
+        # What message should surface in the user interface when this fires?
+        summary = 'An S3 bucket has been set to public access.'
+
+        # This could also include correlating the number of bytes exchanged
+        # to understand if this was a successful SSH session vs a tcp RESET
+        return self.createAlertDict(summary, category, tags, [event], severity)
+
+def handler(event, context):
+    a = AlertCloudtrailLoggingDisabled()
+    b = AlertMyFirstAlert()
+    print(a.main())
+    print(b.main())
+    return 200
+
 ```
