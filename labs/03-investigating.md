@@ -100,10 +100,39 @@ in your AWS account and if so, find out who's making the calls.
   * Click the play icon ![apply changes](img/02-Kibana-visualize-apply-changes.png)
     to apply changes and run the visualization
   * The resulting pie chart will show what IAM user or role is making the calls
-  
-### Further Reading
 
-#### Different ways identity information is stored in CloudTrail records
+## Attacker using credentials from a different IP
+
+### Scenario
+
+You suspect that one of your user's credentials may have been leaked. Create a
+MozDef alert in AWS Lambda which detects if the user is accessing AWS from more
+than one IP address, run the alert code and see if it produces any alert
+records.
+
+The IAM user in question will have a name like `MozDef-LeakedCredentials-1BHSH7UTK191O-IAMUser1-V1ULDSR0PEZL`
+so begin by looking at the IAM users in your account to find the username
+similar to this.
+
+### What to do
+
+* Browse to AWS Lambda
+* Modify the existing `MozDef-MozDefAlertWriterEnv` Lambda function to look like
+  the code below
+  ```python
+  code goes here
+ 
+  ```
+* Click the `Select a test event` drop down and click `Configure test events`
+* Using the default `Hello World` test event, enter an `Event name` of whatever
+  you wish and click `Create`
+* Click `Test` to execute the code, passing in 
+* Browse to the MozDef UI and click the `Alerts` tab
+* See if the an alert was produced  
+
+## Further Reading
+
+### Different ways identity information is stored in CloudTrail records
 
 * Explore the events to see the different ways that an IAM identity shows up
   in a CloudTrail record  
