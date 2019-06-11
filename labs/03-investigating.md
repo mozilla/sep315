@@ -57,7 +57,7 @@ The scenario description would go here
 ### Goal
 
 Determine what IAM user or role is making a large number of Describe calls to
-the AWS API
+the AWS API as this may imply an attacker is using a compromised IAM entity.
 
 ### What to do
 
@@ -71,21 +71,60 @@ the AWS API
   * Look in the graph of events for unusually large amounts of describe API
     calls
   * Zoom into the time window around the spike in API calls
-* Once you've identified the filters and time window that you want, you can
-  visualize the data to understand what IAM users or roles are causing the
-  calls
-  * Click `Save` to save the search query and filters
-  * Note the field that you want to visualize by looking in one of the records
-    and copy pasting the field name
+* Once you've identified the filters and time window that your interested in in
+  the discover tab, you can visualize the data to understand what IAM users or 
+  roles are making the calls. First save your query by clicking `Save` so you 
+  can load it later in the `Visualize` section
+* Next you'll want to determine what field you want to visualize
+  * In this exercise you'll see that all the describe calls come from IAM users.
+    You can tell this because the `details.useridentity.type` fields in the
+    records have a value of `IAMUser`. For further reading, at the end of this
+    page you can see what you would do if the actor was not an IAM user, but
+    it's not required for this exercise.
+  * As a result the field that you'll want to visualize is the `details.useridentity.username`
+    which is the field in CloudTrail records created by IAM users that contains
+    the IAM user's username
+  * Copy `details.useridentity.username` into your clipboard to use in a moment
   * Click the `Visualize` tab
-  * Click the plus sign to add a new visualization
+  * Click the plus sign ![plus sign](img/02-Kibana-visualize-add-button.png) to add
+    a new visualization
   * Click `Pie` to create a pie chart
-  * Click the saved search you just saved
+  * Click the saved search you just saved to load your search in
   * Click `Split Slices`
   * In `Aggregation` choose `Terms`
-  * In `Field` paste the term name that you want to visualize
-  * Click the play icon to run the visualization
+  * In `Field` paste the term name, `details.useridentity.username` from your
+    clipboard that you want to visualize
+  * Click the play icon ![apply changes](img/02-Kibana-visualize-apply-changes.png)
+    to apply changes and run the visualization
+  * The resulting pie chart will show what IAM user or role is making the calls
   
-    
+### Further Reading
 
+#### Different ways identity information is stored in CloudTrail records
 
+* Explore the events to see the different ways that an IAM identity shows up
+  in a CloudTrail record  
+  * IAM Users
+    * Search for `details.useridentity.type:IAMUser`
+    * Find the IAM User name at `details.useridentity.username`
+  * IAM Role
+    * Search for `details.useridentity.type:AssumedRole`
+    * IAM Role name at `details.useridentity.sessioncontext.sessionissuer.username`
+    * IAM User that assumed the role
+      * If the IAM user that assumed the IAM role is in the same account as the 
+        role you can determine the user from the role. Note : If the IAM user
+        is not in the same AWS account, for example because of cross account
+        role assumption, you won't be able to determine what IAM user in a
+        foreign account assumed the IAM role
+      * Determine the ephemeral access key ID produced from the role assumption
+        by copying the `details.useridentity.accessKeyId` value into your
+        clipboard
+      * Search for calls to the AWS STS service that produced that access key
+        ID. For example, if the value in the `details.useridentity.accessKeyId`
+        field was `AROAICKBBQTXWLEXAMPLE`, then you would search for STS calls
+        the returned that value in the `details.responseelements.credentials.accessKeyId`
+        field. The search would look like
+        `source:cloudtrail AND hostname:sts.amazonaws.com AND details.responseelements.credentials.accessKeyId:AROAICKBBQTXWLEXAMPLE`
+      * Find the IAM user name in `details.useridentity.username`
+  * There are other types of IAM entities like `AWSService` and `AWSAccount`
+    which we'll ignore for now
