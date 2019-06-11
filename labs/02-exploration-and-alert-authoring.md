@@ -110,3 +110,78 @@ Then we simply add our new class to the main method in order to get the alert to
 ```
 
 > Now both alerts run as part of a single lambda execution.  If the alerts match on terms you will see these surface in the MozDef UI.
+
+### Aggregation alerts
+
+In the prior exercise you explored the MozDef simple alert pattern.  Now let's explore the alert aggregation pattern.  The alert aggregation is useful for correlation of multiple points of data across a time series.
+
+Below is an example of a simple aggregation that is running on another system _not AWS Lambda_ in your environment.
+
+```python
+#!/usr/bin/env python
+
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+# Copyright (c) 2014 Mozilla Corporation
+
+
+from lib.alerttask import AlertTask
+from mozdef_util.query_models import SearchQuery, TermMatch, ExistsMatch
+
+
+class AlertCloudtrailExcessiveDescribe(AlertTask):
+    def main(self):
+        # Create a query to look back the last 20 minutes
+        search_query = SearchQuery(minutes=20)
+
+        # Add search terms to our query
+        search_query.add_must([
+            TermMatch('source', 'cloudtrail'),
+            TermMatch('details.eventverb', 'Describe'),
+            ExistsMatch('details.source')
+        ])
+
+        self.filtersManual(search_query)
+        # We aggregate on details.hostname which is the AWS service name
+        self.searchEventsAggregated('details.source', samplesLimit=2)
+        self.walkAggregations(threshold=50)
+
+    def onAggregation(self, aggreg):
+        category = 'access'
+        tags = ['cloudtrail']
+        severity = 'WARNING'
+        summary = "Excessive Describe calls on {0} ({1})".format(aggreg['value'], aggreg['count'])
+
+        # Create the alert object based on these properties
+        return self.createAlertDict(summary, category, tags, aggreg['events'], severity)
+```
+
+> Note: That in the above example instead of using `onEvent` we instead use onAggregation.  
+
+The alert logic flows over a sliding window which in this case pulls back 20 minutes of cloudtrail data at a time.  
+
+#### Code Highlights from aggregation
+
+```python
+        # We aggregate on details.hostname which is the AWS service name
+        self.searchEventsAggregated('details.source', samplesLimit=2)
+        self.walkAggregations(threshold=50)
+```
+
+In the above codeblock there are two key terms `sampleLimit` and `threshold`.
+
+* `samplelimit`: is how many times the alert will sample elasticsearch using the search terms.
+* `threshold`: in the totality of the two samples for the given time window.  The terms must match this number of times.
+
+**This means that for the above alert to fire.  In 20 minutes inside of 2 samples there MUST be 50 events that are eventVerb type Describe in order to trigger the "excessive describe calls" alert.**
+
+### Lab Exercise
+
+For your lab exercise in this section choose the appropriate alert to do the following:
+
+1. Detect the creation of an IAM user.  Using simple alerts.  The API call should be `iam:CreateUser`.  You can test this by creating a new user in your account.
+
+**Solution:** A solution has been provided (here)['solutions/02.md']
+
+> Note: In an upcoming lab you will be able to use an aggregation as part of an investigation.
