@@ -44,7 +44,9 @@ Using the learnings from the previous lab, can you draft how an alert for this e
 
 > **Note**: In a real environment, SSH may be running on different ports, so you might need some protocol analysis as
 > well. Additionally, in some cases you might want to use different log sources, such as SSH logs themselves, if
-> available - or use them in combination with other types of logs.
+> available - or use them in combination with other types of logs. The amount of data that is found in the flow logs can
+> be very close between a successful and an unsuccessful connection, so it's not always reliable - but we also don't
+> have perfect logging, and it's often sufficient. Remember to think out of the box!
 
 ## Alert : Attacker is determining what permissions they have
 
