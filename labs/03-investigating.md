@@ -131,3 +131,29 @@ in your AWS account and if so, find out who's making the calls.
       * Find the IAM user name in `details.useridentity.username`
   * There are other types of IAM entities like `AWSService` and `AWSAccount`
     which we'll ignore for now
+
+
+## New S3 bucket suddenly made public
+
+### Scenario
+
+You have a S3 bucket storing both public and sensitive data in AWS. Someone needed to provide a direct link to the
+public data and noticed the bucket was not public, so they set it to public. Unfortunately, they haven't noticed that
+this bucket also contained private data!
+
+Your goal is to figure which buckets were made public, and optionally, to test an alert that would detect this as it
+happens in order to shorten the time during which the bucket is exposed to the public in the future.
+
+> **Tip**: If stuck, have a look at the [https://docs.aws.amazon.com/AmazonS3/latest/API/Welcome.html](AWS S3 API
+> functions), these are logged by CloudTrail and ingested in MozDef.  Once you find the type of function used to give
+> public access, try to look for them.
+
+### Breadcrumbs
+
+These are pointers to different possible ways to solve this problem.
+
+- Find S3 buckets and list their permissions
+- Find S3 bucket update events in MozDef and filter by how their permissions have been modified
+- Create an alert using your learning from the previous lab exercises, which will detect the event live, based on the
+  MozDef search results
+- Extra points: try to make the alert not alert on new public buckets in order to reduce false positives!
