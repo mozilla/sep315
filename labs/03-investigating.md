@@ -120,9 +120,50 @@ similar to this.
 * Modify the existing `MozDef-MozDefAlertWriterEnv` Lambda function to look like
   the code below
   ```python
-  code goes here
- 
-  ```
+  from lib.alerttask import AlertTask
+  from mozdef_util.query_models import SearchQuery, TermMatch, QueryStringMatch, ExistsMatch, PhraseMatch, WildcardMatch
+
+
+  class AlertMultipleIpPerUser(AlertTask):
+     username = 'jdoe'
+
+     def main(self):
+         # Create a query to look back the last 15 minutes
+         search_query = SearchQuery(minutes=15)
+
+         search_query.add_must([
+             TermMatch('source', 'cloudtrail'),
+             TermMatch('details.useridentity.type', 'IAMUser'),
+             # May want to change this to be whatever username
+             TermMatch('details.useridentity.username', self.username)
+         ])
+
+         self.filtersManual(search_query)
+         self.searchEventsAggregated('details.useridentity.username', samplesLimit=50)
+         # alert when >= X matching events in an aggregation
+         self.walkAggregations(threshold=1)
+
+     def onAggregation(self, aggreg):
+         # aggreg['count']: number of items in the aggregation, ex: number of failed login attempts
+         # aggreg['value']: value of the aggregation field, ex: toto@example.com
+         # aggreg['events']: list of events in the aggregation
+
+         source_ips = set()
+         for event in aggreg['events']:
+             source_ips.add(event['_source']['details']['sourceipaddress'])
+
+         # If the source ip addresses are less than 2, don't throw the alert (return None)
+         if len(source_ips) < 2:
+             return
+
+         category = 'access'
+         tags = ['access']
+         severity = 'WARNING'
+         summary = "Multiple logins from {0} ({1})".format(self.username, ', '.join(source_ips))
+
+         # Create the alert object based on these properties
+         return self.createAlertDict(summary, category, tags, aggreg['events'], severity)
+   ```
 * Click the `Select a test event` drop down and click `Configure test events`
 * Using the default `Hello World` test event, enter an `Event name` of whatever
   you wish and click `Create`
