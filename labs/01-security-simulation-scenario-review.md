@@ -23,7 +23,7 @@ deployed in your account using CloudFormation.
     the various nested stacks. All the AWS resources that makeup MozDef can be
     found in these stacks.
 * Browse to the [Lambda product in the AWS console](https://us-west-2.console.aws.amazon.com/lambda/home).
-  * Click the `MozDef-MozDefAlertWriterEnv` Lambda function to see an example
+  * Click the `module-[...]-AlertWritersEnv-[...]` Lambda function to see an example
     MozDef alert and author your own
     ![MozDef Lambda functions](img/01-MozDef-Lambda-functions.png)
 * Browse to the [EC2 product in the AWS console](https://us-west-2.console.aws.amazon.com/ec2/v2/home).
