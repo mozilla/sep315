@@ -12,7 +12,7 @@ even better solutions for each of them. There are multiple good answers!
 ### Find the data
 
 1. Go in Kibana, and in the "Discover" mode search for the string `CreateTags` over the past hour or so.
-2. Find an event that matches your tag creation ( note: there should only be one ): `category:cloudtrail AND details.eventname:CreateTags`
+2. Find an event that matches your tag creation ( note: there should only be one ): `source:cloudtrail AND details.eventname:CreateTags`
 
 ## Craft your simple alert
 
