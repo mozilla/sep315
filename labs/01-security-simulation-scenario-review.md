@@ -44,6 +44,16 @@ deployed in your account using CloudFormation.
   prompt for the same HTTP basic auth username and password, `mozdef` and `MozDefReinforce2019`
   ![MozDef Kibana UI](img/01-MozDef-Kibana-UI.png)
 
+### Update Kibana's Indexes
+
+Perform the following steps to map new field data types:  
+
+1. In the kibana UI click management.
+2. Click on "Index Patterns"
+3. Click "Refresh Field List" at the top right.
+
+> Note: This pulls in any new fields from the data set to your kibana mappings.  This powers the ability to query these fields later on.
+
 ## Verify environment is complete
 
 Ensure that you are able to get to the MozDef web UI and Kibana data visualizer
