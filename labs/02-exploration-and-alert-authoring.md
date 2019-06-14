@@ -183,4 +183,4 @@ For your lab exercise in this section choose the appropriate alert to do the fol
 1. Detect the creation of new tags on instances,  using simple alerts.  The API call should be `ec2:TagInstance`.  You can test this by adding a tag to a system in your account.
 **Solution:** A solution has been provided [here](../solutions/02-alert-writing.md)
 
-> Note: In an upcoming lab you will be able to use an aggregation as part of an investigation.
+> Note: In an upcoming lab you will be able to use an aggregation as part of an investigation. Also, it can take a few **minutes** for the event to propagate and be available in Kibana once you create the tag. 
