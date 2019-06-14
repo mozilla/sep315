@@ -5,7 +5,10 @@ account and ensure that everything is setup correctly.
 
 ## Log in to your lab AWS account
 
-Event Engine login details go here
+* Go to the [Event Engine](https://dashboard.eventengine.run/login)
+* Enter your hash (will be given to you) and click proceed
+
+You will be able to set a team name and to access the AWS Web Console and CLI from this page. Just click the console link to go to the web console, or copy paste the CLI credentials if you prefer using AWS CLI.
 
 ## Explore the AWS account contents
 
