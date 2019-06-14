@@ -36,12 +36,12 @@ deployed in your account using CloudFormation.
     load balancer. Click the copy ![copy icon](img/01-Copy-icon.png) icon to
     copy the URL to your clipboard.
 * Paste the URL into another tab to browse to the MozDef web UI
-  * The HTTP basic auth username is `mozdef` and the default password is `password`
+  * The HTTP basic auth username is `mozdef` and the default password is `MozDefReinforce2019`
     ![MozDef basic auth prompt](img/01-MozDef-basic-auth-prompt.png)
   * Once you log in you'll see the MozDef web UI
     ![MozDef Web UI](img/01-MozDef-Web-UI.png)
 * Visit the Kibana data visualizer by clicking the `KIBANA` menu item. This will
-  prompt for the same HTTP basic auth username and password, `mozdef` and `password`
+  prompt for the same HTTP basic auth username and password, `mozdef` and `MozDefReinforce2019`
   ![MozDef Kibana UI](img/01-MozDef-Kibana-UI.png)
 
 ## Verify environment is complete
