@@ -67,4 +67,4 @@ Then click test and setup an empty event.
 
 ![Solution 2](img/solution_2-1.png)
 
-If successful you will see your alert surface in the WebUI.
+If successful you will see your alert surface in the MozDef Alert WebUI and in Kibana's alert index (in "Discover").
