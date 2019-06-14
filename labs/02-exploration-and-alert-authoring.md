@@ -32,7 +32,7 @@ Scroll down past the boiler plate code to turn on the python logger to find an o
 
 Pay careful attention to the methods within the object called: `onEvent` and `main`
 
-`main` is designed to take a single event and then perform a search in elastic whereas `onEvent` will execute if the search terms are matched in elastic.  Uncomment lines _38 - 41_ and customize the search terms in order to modify the alert to match on `StopLogging` instead of `DescribeTable`.
+`main` is designed to take a single event and then perform a search in elastic whereas `onEvent` will execute if the search terms are matched in elastic.  **Uncomment lines _38 - 41_** and customize the search terms in order to modify the alert to match on `StopLogging` instead of `DescribeTable`.
 
 AWS Lambda will retry if the function doesn't return `200`.  Change the last three lines of the function to instead be:
 
