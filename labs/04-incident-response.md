@@ -322,4 +322,4 @@ This example show the connection for the Step function from above and the needed
 
 to we can build StepFunctions to deal with other Cloud trail event s that we deem to be untoward.
 
-Once we have completed this step, this lab is complete, and you should have the basic skills that will allow you build a system, to response to threat in your application.
+Once we have completed this step, this lab is complete, and you should have the basic skills that will allow you build a system, to response to a threat in your application.
