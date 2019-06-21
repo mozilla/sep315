@@ -13,19 +13,19 @@ Step 1 – Removal of Control
 
 Browse to the AWS Console and go to the IAM service
 
-Image1
+(img/Picture1.png)
 
 - Once there click the Users link on the left. This will bring you to the Users Screen.
 
-## **Image2**
+(img/Picture2.png)
 
 -  You will note that the access Key age is today, not a good sign, as it means that someone has just created access. Click on the user that starts with the word &quot;Module-&quot;
 
-## **Image3**
+(img/Picture3.png)
 
 - Here we can see that this use has Admin access. If we need to maintain this user for investigative purposes, we can simply remove the access that it has by remove the Policies that it has associated with it and changing the credentials. If a User that is associated with application is compromised, we may only want to change the access keys and password. We do this by clicking on the Security Credentials tab.
 
-## Image4
+(img/Picture4.png)
 
 - Here we can see that the use has been used recently. We also have the option to remove the access the they may have, by clicking the &quot;X&quot; near make inactive. In a real world scenario it may be a very good choice to click the &quot;Make Inactive&quot; button, if the comprised user has existed for a long period of time and developers may have used these credentials. You will also note that this user, is only able to login into the API, not the console, as the console password says that it is disabled. Also please review is the user has an SSH key. If they do this would mean that the bad actor could infect any products that this user has the ability to touch.
 
@@ -315,7 +315,7 @@ To test this step function, you need to fire it in some way. The best way to tes
 
 This example show the connection for the Step function from above and the needed events in CloudTrail. We can expand this pattern to include many items that are concerning. If we choose
 
-Image5
+(img/Picture5.png)
 
 to we can build StepFunctions to deal with other Cloud trail event s that we deem to be untoward.
 
