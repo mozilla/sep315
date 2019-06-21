@@ -2,6 +2,9 @@
 # Incidence Response
 
 So, we know there is an issue and we need to respond. We have to make some assumptions here, as the we don&#39;t have a legal department or other parts of the equation that would be an enterprise. The first assumption is that we are only moderately concerned attribution, which may seem like an odd statement, but most companies aren&#39;t interested in attribution, as it is hard to do and offers little in the way return on investment. Secondly, we are assuming that our make-believe enterprise doesn&#39;t have to worry about moving data across country lines or other HR issues that would be specific to different regions of the world.
+Read Further:
+[IR Whitepaper](https://d1.awsstatic.com/whitepapers/aws_security_incident_response.pdf)
+
 
 ## **Setup**
 
