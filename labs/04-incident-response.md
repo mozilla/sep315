@@ -1,7 +1,7 @@
 #
 # Incidence Response
 
-So, we know there is an issue and we need to respond. We have to make some assumptions here, as the we don&#39;t have a legal department or other parts of the equation that would be an enterprise. The first assumption is that we are only moderately concerned attribution, which may seem like an odd statement, but most companies aren&#39;t interested in attribution, as it is hard to do and offers little in the way return on investment. Secondly, we are assuming that our make-believe enterprise doesn&#39;t have to worry about moving data across country lines or other HR issues that would be specific to different regions of the world.
+So, we know there is an issue and we need to respond. We have to make some assumptions here, as the we don't have a legal department or other parts of the equation that would be an enterprise. The first assumption is that we are only moderately concerned attribution, which may seem like an odd statement, but most companies aren't interested in attribution, as it is hard to do and offers little in the way return on investment. Secondly, we are assuming that our make-believe enterprise doesn't have to worry about moving data across country lines or other HR issues that would be specific to different regions of the world.
 Read Further:
 [IR Whitepaper](https://d1.awsstatic.com/whitepapers/aws_security_incident_response.pdf)
 
@@ -22,7 +22,7 @@ Browse to the AWS Console and go to the IAM service
 
 ![Picture2](img/Picture2.png)
 
--  You will note that the access Key age is today, not a good sign, as it means that someone has just created access. Click on the user that starts with the word &quot;Module-&quot;
+-  You will note that the access Key age is today, not a good sign, as it means that someone has just created access. Click on the user that starts with the word "Module-"
 
 ![Picture3](img/Picture3.png)
 
@@ -30,7 +30,7 @@ Browse to the AWS Console and go to the IAM service
 
 ![Picture4](img/Picture4.png)
 
-- Here we can see that the use has been used recently. We also have the option to remove the access the they may have, by clicking the &quot;X&quot; near make inactive. In a real world scenario it may be a very good choice to click the &quot;Make Inactive&quot; button, if the comprised user has existed for a long period of time and developers may have used these credentials. You will also note that this user, is only able to login into the API, not the console, as the console password says that it is disabled. Also please review is the user has an SSH key. If they do this would mean that the bad actor could infect any products that this user has the ability to touch.
+- Here we can see that the use has been used recently. We also have the option to remove the access the they may have, by clicking the "X" near make inactive. In a real world scenario it may be a very good choice to click the "Make Inactive" button, if the comprised user has existed for a long period of time and developers may have used these credentials. You will also note that this user, is only able to login into the API, not the console, as the console password says that it is disabled. Also please review is the user has an SSH key. If they do this would mean that the bad actor could infect any products that this user has the ability to touch.
 
 ## **SSH Traffic from the Outside**
 
@@ -47,7 +47,7 @@ Second, we need to correct the SSH traffic to a server that is on the open netwo
 - Find the Security group/s that allow conventional SSH port: 22 (TCP)
 - Figure out the event format
 
-**Note** : In a real environment, SSH may be running on different ports, so you might need some protocol analysis as well. Additionally, in some cases you might want to use different log sources, such as SSH logs themselves, if available - or use them in combination with other types of logs. The amount of data that is found in the flow logs can be very close between a successful and an unsuccessful connection, so it&#39;s not always reliable - but we also don&#39;t have perfect logging, and it&#39;s often sufficient. Remember to think out of the box!
+**Note** : In a real environment, SSH may be running on different ports, so you might need some protocol analysis as well. Additionally, in some cases you might want to use different log sources, such as SSH logs themselves, if available - or use them in combination with other types of logs. The amount of data that is found in the flow logs can be very close between a successful and an unsuccessful connection, so it's not always reliable - but we also don't have perfect logging, and it's often sufficient. Remember to think out of the box!
 
 ## **Ok, you know how to do it by hand…**
 
@@ -61,122 +61,122 @@ In the real world you will need to do all of the above, over the course of half 
 
 ### Step one:
 
-Build out your work flow. The below is a step function that I used for a webinar, earlier this year. If you take a look at the parts, you can see that it is broken up into steps, each of these steps calls another step. Notice in the below step function that the &quot;Resource&quot; in each section is pointing to the ARN of a lambda function. There is also a &quot;Next&quot; item and it points to another step in the function.
-There is also a try/catch portion of each step, that reviews the output of the step function and pushes the function to solve the issue it encountered. There is also a section called &quot;IngestionType&quot;, which looks at the &quot;ResultsPath&quot; and evaluates the answers to switch over to a new steps. Also be aware that there is no order in the statement, it starts with the &quot;StartAt&quot; statement says it should, and ends at the &quot;EndState&quot; step.
+Build out your work flow. The below is a step function that I used for a webinar, earlier this year. If you take a look at the parts, you can see that it is broken up into steps, each of these steps calls another step. Notice in the below step function that the "Resource" in each section is pointing to the ARN of a lambda function. There is also a "Next" item and it points to another step in the function.
+There is also a try/catch portion of each step, that reviews the output of the step function and pushes the function to solve the issue it encountered. There is also a section called "IngestionType", which looks at the "ResultsPath" and evaluates the answers to switch over to a new steps. Also be aware that there is no order in the statement, it starts with the "StartAt" statement says it should, and ends at the "EndState" step.
 
 ### An example Step function:
 
 {
 
-  &quot;Comment&quot;: &quot;Remediation\_Machine&quot;,
+  "Comment": "Remediation\_Machine",
 
-  &quot;States&quot;: {
+  "States": {
 
-      &quot;Failed&quot;: {
+      "Failed": {
 
-          &quot;Type&quot;: &quot;Pass&quot;,
+          "Type": "Pass",
 
-          &quot;Next&quot;: &quot;EndState&quot;
+          "Next": "EndState"
 
       },
 
-      &quot;IngestionAction&quot;: {
+      "IngestionAction": {
 
-          &quot;Resource&quot;: &quot;arn:aws:lambda:us-east-2:99999999999:function:CloudWatcherCore&quot;,
+          "Resource": "arn:aws:lambda:us-east-2:99999999999:function:CloudWatcherCore",
 
-          &quot;ResultPath&quot;: &quot;$.CloudWatcherCore&quot;,
+          "ResultPath": "$.CloudWatcherCore",
 
-          &quot;InputPath&quot;: &quot;$&quot;,
+          "InputPath": "$",
 
-          &quot;TimeoutSeconds&quot;: 86400,
+          "TimeoutSeconds": 86400,
 
-          &quot;HeartbeatSeconds&quot;: 60,
+          "HeartbeatSeconds": 60,
 
-          &quot;Next&quot;: &quot;IngestionType&quot;,
+          "Next": "IngestionType",
 
-          &quot;Type&quot;: &quot;Task&quot;,
+          "Type": "Task",
 
-          &quot;Retry&quot;: [
+          "Retry": [
 
               {
 
-                  &quot;ErrorEquals&quot;: [&quot;States.ALL&quot;],
+                  "ErrorEquals": ["States.ALL"],
 
-                  &quot;IntervalSeconds&quot;: 10,
+                  "IntervalSeconds": 10,
 
-                  &quot;MaxAttempts&quot;: 5,
+                  "MaxAttempts": 5,
 
-                  &quot;BackoffRate&quot;: 2
+                  "BackoffRate": 2
 
               }
 
           ],
 
-          &quot;Catch&quot;: [ {
+          "Catch": [ {
 
-              &quot;ErrorEquals&quot;: [&quot;States.ALL&quot;],
+              "ErrorEquals": ["States.ALL"],
 
-              &quot;Next&quot;: &quot;Failed&quot;,
+              "Next": "Failed",
 
-              &quot;ResultPath&quot;: &quot;$.CreateSnapshot.error&quot;
+              "ResultPath": "$.CreateSnapshot.error"
 
           } ]
 
       },
 
-      &quot;IngestionType&quot;: {
+      "IngestionType": {
 
-        &quot;Type&quot;: &quot;Choice&quot;,
+        "Type": "Choice",
 
-        &quot;Choices&quot;: [
+        "Choices": [
 
           {
 
-            &quot;Variable&quot;: &quot;$.CloudWatcherCore&quot;,
+            "Variable": "$.CloudWatcherCore",
 
-            &quot;StringEquals&quot;: &quot;EmergencyActionIfrastructure&quot;,
+            "StringEquals": "EmergencyActionIfrastructure",
 
-            &quot;Next&quot;: &quot;EmergencyActionIfrastructure&quot;
+            "Next": "EmergencyActionIfrastructure"
 
           },
 
           {
 
-            &quot;Variable&quot;: &quot;$.CloudWatcherCore&quot;,
+            "Variable": "$.CloudWatcherCore",
 
-            &quot;StringEquals&quot;: &quot;EmergencyActionAccount&quot;,
+            "StringEquals": "EmergencyActionAccount",
 
-            &quot;Next&quot;: &quot;EmergencyActionAccount&quot;
+            "Next": "EmergencyActionAccount"
 
           },
 
           {
 
-            &quot;Variable&quot;: &quot;$.CloudWatcherCore&quot;,
+            "Variable": "$.CloudWatcherCore",
 
-            &quot;StringEquals&quot;: &quot;EmergencyActionApplication&quot;,
+            "StringEquals": "EmergencyActionApplication",
 
-            &quot;Next&quot;: &quot;EmergencyActionApplication&quot;
+            "Next": "EmergencyActionApplication"
 
           }
 
         ],
 
-        &quot;Default&quot;: &quot;EndState&quot;
+        "Default": "EndState"
 
       },
 
-      &quot;EndState&quot;: {
+      "EndState": {
 
-          &quot;End&quot;: true,
+          "End": true,
 
-          &quot;Type&quot;: &quot;Pass&quot;
+          "Type": "Pass"
 
       }
 
   },
 
-  &quot;StartAt&quot;: &quot;IngestionAction&quot;
+  "StartAt": "IngestionAction"
 
 }
 
@@ -198,15 +198,15 @@ import boto3
 
 def lambda\_handler(event, context):
 
-    iam = client(&#39;iam&#39;)
+    iam = client('iam')
 
-    ec2 = client(&#39;ec2&#39;)
+    ec2 = client('ec2')
 
         iam.delete\_access\_key(
 
-        AccessKeyId=event[&quot;ACCESS\_KEY\_ID&quot;],
+        AccessKeyId=event["ACCESS\_KEY\_ID"],
 
-        UserName=event[&quot;IAM\_USER\_NAME&quot;]
+        UserName=event["IAM\_USER\_NAME"]
 
     )
 
@@ -236,17 +236,17 @@ import json, urllib2, boto3
 
 def lambda\_handler(event, context):
 
-    response = urllib2.urlopen(&#39;https://ip-ranges.amazonaws.com/ip-ranges.json&#39;)
+    response = urllib2.urlopen('https://ip-ranges.amazonaws.com/ip-ranges.json')
 
     json\_data = json.loads(response.read())
 
-    new\_ip\_ranges = [x[&#39;ip\_prefix&#39;] for x in json\_data[&#39;prefixes&#39;] if x[&#39;service&#39;] == &#39;CLOUDFRONT&#39; ]
+    new\_ip\_ranges = [x['ip\_prefix'] for x in json\_data['prefixes'] if x['service'] == 'CLOUDFRONT' ]
 
     #print(new\_ip\_ranges)
 
-    ec2 = boto3.resource(&#39;ec2&#39;)
+    ec2 = boto3.resource('ec2')
 
-    security\_group = ec2.SecurityGroup(&#39;sg-6rrrrr10&#39;)
+    security\_group = ec2.SecurityGroup('sg-6rrrrr10')
 
     current\_ips = security\_group.ip\_permissions
 
@@ -256,23 +256,23 @@ def lambda\_handler(event, context):
 
     else:
 
-        current\_ip\_ranges = [x[&#39;cidrip&#39;] for x in current\_ips[0][&#39;ipranges&#39;] ]
+        current\_ip\_ranges = [x['cidrip'] for x in current\_ips[0]['ipranges'] ]
 
     print(current\_ip\_ranges)
 
     params\_dict = {
 
-        u&#39;PrefixListIds&#39;: [],
+        u'PrefixListIds': [],
 
-        u&#39;FromPort&#39;: 80,
+        u'FromPort': 80,
 
-        u&#39;IpRanges&#39;: [],
+        u'IpRanges': [],
 
-        u&#39;ToPort&#39;: 443,
+        u'ToPort': 443,
 
-        u&#39;IpProtocol&#39;: &#39;tcp&#39;,
+        u'IpProtocol': 'tcp',
 
-        u&#39;UserIdGroupPairs&#39;: []
+        u'UserIdGroupPairs': []
 
     }
 
@@ -282,7 +282,7 @@ def lambda\_handler(event, context):
 
         if ip not in current\_ip\_ranges:
 
-            authorize\_dict[&#39;IpRanges&#39;].append({u&#39;CidrIp&#39;: ip})
+            authorize\_dict['IpRanges'].append({u'CidrIp': ip})
 
     revoke\_dict = params\_dict.copy()
 
@@ -290,21 +290,21 @@ def lambda\_handler(event, context):
 
         if ip not in new\_ip\_ranges:
 
-            revoke\_dict[&#39;IpRanges&#39;].append({u&#39;CidrIp&#39;: ip})
+            revoke\_dict['IpRanges'].append({u'CidrIp': ip})
 
-    print(&quot;the following new ip addresses will be added:&quot;)
+    print("the following new ip addresses will be added:")
 
-    print(authorize\_dict[&#39;IpRanges&#39;])
+    print(authorize\_dict['IpRanges'])
 
-    print(&quot;the following new ip addresses will be removed:&quot;)
+    print("the following new ip addresses will be removed:")
 
-    print(revoke\_dict[&#39;IpRanges&#39;])
+    print(revoke\_dict['IpRanges'])
 
     security\_group.revoke\_ingress(IpPermissions=[revoke\_dict])
 
     security\_group.authorize\_ingress(IpPermissions=[authorize\_dict])
 
-    return {&#39;authorized&#39;: authorize\_dict, &#39;revoked&#39;: revoke\_dict}
+    return {'authorized': authorize\_dict, 'revoked': revoke\_dict}
 
 Step 3.
 
