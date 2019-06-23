@@ -167,7 +167,14 @@ similar to this.
 * Click the `Select a test event` drop down and click `Configure test events`
 * Using the default `Hello World` test event, enter an `Event name` of whatever
   you wish and click `Create`
-* Click `Test` to execute the code, passing in 
+* Click `Test` to execute the code, passing in and empty event:
+```
+{
+  "key1": "value1",
+  "key2": "value2",
+  "key3": "value3"
+}
+```
 * Browse to the MozDef UI and click the `Alerts` tab
 * See if the an alert was produced  
 

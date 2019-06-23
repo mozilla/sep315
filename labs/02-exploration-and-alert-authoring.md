@@ -54,7 +54,7 @@ You may also run multiple alerts inside the same lambda function by copying and 
 
 _Note:_ that these classes must have unique names inside of the same lambda function.  The names should be descriptive of what you are attempting to alert on.  
 
-For example if you wanted to generate an alert every time there was a console login you might write a class that looks like:
+For example if you wanted to generate an alert every time there was an ssh console login (_not aws console_) you might write a class that looks like:
 
 ```python
 class AlertMyFirstAlert(AlertTask):
@@ -180,7 +180,7 @@ In the above codeblock there are two key terms `sampleLimit` and `threshold`.
 
 For your lab exercise in this section choose the appropriate alert to do the following:
 
-1. Detect the creation of new tags on instances,  using simple alerts.  The API call should be `ec2:TagInstance`.  You can test this by adding a tag to a system in your account.
+1. Detect the creation of new tags on instances,  using simple alerts.  The API call should be `ec2:CreateTags`.  You can test this by adding a tag to a system in your account.
 **Solution:** A solution has been provided [here](../solutions/02-alert-writing.md)
 
 > Note: In an upcoming lab you will be able to use an aggregation as part of an investigation. Also, it can take a few **minutes** for the event to propagate and be available in Kibana once you create the tag. 
