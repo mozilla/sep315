@@ -18,6 +18,10 @@ Lab Material
 * Responding to your findings aka Incident Response
 
 
+## Slides
+
+[AWS Re:Inforce SEP-315](AWS ReInforce SEP-315.pdf)
+
 ## Survey & Contacting us
 
 If you're interested in running MozDef and would like to give us feedback, please take the following surveys:
