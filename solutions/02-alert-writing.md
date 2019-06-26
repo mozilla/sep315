@@ -60,6 +60,7 @@ def handle(event, context):
     logger = setup_logging()
     logger.debug('Function initialized.')
     a = AlertCreateTagAlert()
+    a.main()
     return 200
 ```
 
