@@ -53,7 +53,7 @@ Second, we need to address the issue of SSH traffic to a server that is on the o
 
 ### **Scenario (This is the hard part)**
 
-In the real world you will need to do all of the above, over the course of half a second. You need to be able to automate all of it and do it quickly. In the real world, many of the actions that you would expect to do are pre written for you in tools like CloudCustodian or Warden. Warden is described in another session here at re:inforce.
+In the real world you will need to do all of the above, over the course of half a second. You need to be able to automate all of it and do it quickly. In the real world, many of the actions that you would expect to do are pre written for you in tools like CloudCustodian or Warden. Warden is described in another session here at blackhat.
 
 ### **What to do**
 
@@ -321,4 +321,4 @@ This example show the connection for the Step function from above and the needed
 
 to we can build StepFunctions to deal with other Cloud trail events that we deem to be untoward.
 
-Once we have completed this step, this lab is complete, and you should have the basic skills that will allow you build a system, to response to a threat in your application.
+Once we have completed this step, this lab is complete, and you should have the basic skills that will allow you build a system, to respond to a threat in your application.
